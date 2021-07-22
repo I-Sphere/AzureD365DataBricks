@@ -39,9 +39,59 @@ var hierarchyDF = dimDF
   .na.drop(Seq("MAINACCOUNT"))
   .orderBy("MAINACCOUNT")
 
+display(hierarchyDF)
+
 // COMMAND ----------
 
 hierarchyDF
   .write
+  .mode(SaveMode.Overwrite)
   .option("header", "true")
   .csv("/mnt/datalake/model/dimension/LedgerAccount.csv")
+
+// COMMAND ----------
+
+hierarchyDF
+  .write
+  .format("delta")
+  .mode(SaveMode.Overwrite)
+  .option("path", "/mnt/datalake/model/database/LedgerAccount/LedgerAccount")
+
+display(hierarchyDF)
+
+// COMMAND ----------
+
+hierarchyDF
+  .write
+  .format("delta")
+  .mode(SaveMode.Append)
+  .option("path", "/mnt/datalake/model/database/LedgerAccount/LedgerAccount")
+
+// COMMAND ----------
+
+// MAGIC %sql
+// MAGIC DROP TABLE IF EXISTS D365.LedgerAccount;
+// MAGIC 
+// MAGIC CREATE TABLE IF NOT EXISTS D365.LedgerAccount
+// MAGIC   (
+// MAGIC     NAME string,
+// MAGIC     MAINACCOUNT string,
+// MAGIC     MAINACCOUNTID_L1 string,
+// MAGIC     MAINACCOUNTID_L2 string,
+// MAGIC     MAINACCOUNTID_L3 string,
+// MAGIC     MAINACCOUNTID_L4 string,
+// MAGIC     MAINACCOUNTID_L5 string,
+// MAGIC     MAINACCOUNTID_L6 string,
+// MAGIC     MAINACCOUNTID_L7 string,
+// MAGIC     MAINACCOUNTID_L8 string
+// MAGIC   )
+// MAGIC   USING delta
+// MAGIC   LOCATION "/mnt/datalake/model/database/LedgerAccount/LedgerAccount"
+// MAGIC ;
+// MAGIC   
+// MAGIC select count(1) from D365.LedgerAccount;
+
+// COMMAND ----------
+
+// MAGIC %sql
+// MAGIC DESCRIBE EXTENDED D365.LedgerAccount

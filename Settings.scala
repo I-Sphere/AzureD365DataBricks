@@ -17,3 +17,8 @@ dbutils.fs.mount(
   mountPoint = "/mnt/datalake",
   extraConfigs = configs
 )
+
+// COMMAND ----------
+
+// MAGIC %sql
+// MAGIC CREATE DATABASE IF NOT EXISTS D365
